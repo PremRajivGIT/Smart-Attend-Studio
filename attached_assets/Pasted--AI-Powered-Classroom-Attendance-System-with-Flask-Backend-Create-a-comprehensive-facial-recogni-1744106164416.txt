@@ -1,0 +1,35 @@
+# AI-Powered Classroom Attendance System with Flask Backend
+
+Create a comprehensive facial recognition attendance system with a Flask server backend that processes student videos, builds datasets, trains models, and exports deployable TFLite models. The system should be structured as follows:
+
+1. Set up a Flask server to handle:
+   - Video file uploads with student metadata (roll number, department, section)
+   - API endpoints for dataset creation, model training, and TFLite export
+   - Model download functionality via API
+
+2. Implement the core attendance system workflow:
+   - Process videos tagged with student roll numbers, department, and section identifiers
+   - Generate organized facial recognition datasets from these videos
+   - Train classroom-specific models using the processed datasets
+   - Export optimized TFLite models for deployment
+
+3. Design API endpoints for:
+   - `/upload` - Receiving and storing student videos with metadata
+   - `/create-dataset` - Triggering dataset creation using automate.py
+   - `/train/<classroom_id>` - Training models for specific classrooms
+   - `/models` - Listing available trained models
+   - `/download/<model_id>` - Downloading TFLite models
+   - `/status/<job_id>` - Checking processing status
+
+Key requirements:
+- Support for multiple departments, sections, and classrooms (~70 students per class)
+- Backend automation using automate.py for dataset creation
+- Classroom-specific model training
+- TFLite export and storage functionality
+- Robust error handling for various video formats and quality levels
+- Clear progress tracking and status reporting via API
+- Frontend-independent design to allow for any UI implementation
+- Asynchronous processing for long-running tasks
+- Secure file storage and access control
+
+The system should leverage computer vision libraries to extract facial features, maintain proper data organization by department/section/roll number, and implement a streamlined workflow from video upload to model deployment, all accessible through a well-documented API that can be called from any frontend implementation.
