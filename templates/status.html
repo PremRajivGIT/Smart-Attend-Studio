@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4><i data-feather="activity" class="me-2"></i>Job Status</h4>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <h5><i data-feather="alert-triangle" class="me-1"></i> Error</h5>
+                    <p>{{ error }}</p>
+                </div>
+                {% elif job %}
+                <div class="job-details" data-job-id="{{ job.job_id }}">
+                    <h5>Job Details</h5>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>Job ID</th>
+                                <td>{{ job.job_id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Type</th>
+                                <td>{{ job.job_type }}</td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    <span id="jobStatus" class="badge
+                                        {% if job.status == 'pending' %}bg-secondary
+                                        {% elif job.status == 'processing' %}bg-primary
+                                        {% elif job.status == 'completed' %}bg-success
+                                        {% else %}bg-danger{% endif %}">
+                                        {{ job.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Created At</th>
+                                <td>{{ job.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                            {% if job.completed_at %}
+                            <tr>
+                                <th>Completed At</th>
+                                <td>{{ job.completed_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if job.department %}
+                            <tr>
+                                <th>Department</th>
+                                <td>{{ job.department }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if job.section %}
+                            <tr>
+                                <th>Section</th>
+                                <td>{{ job.section }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if job.error_message %}
+                            <tr>
+                                <th>Error</th>
+                                <td class="text-danger">{{ job.error_message }}</td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                    
+                    <div id="result-container" class="mt-4 d-none">
+                        <h5>Result</h5>
+                        <div id="result-content"></div>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <button id="refreshStatus" class="btn btn-primary">
+                            <i data-feather="refresh-cw" class="me-1"></i> Refresh Status
+                        </button>
+                        <a href="/" class="btn btn-secondary ms-2">
+                            <i data-feather="home" class="me-1"></i> Return to Home
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up auto refresh for job status
+        const jobDetails = document.querySelector('.job-details');
+        if (jobDetails) {
+            const jobId = jobDetails.dataset.jobId;
+            const refreshButton = document.getElementById('refreshStatus');
+            
+            // Set up refresh button
+            refreshButton.addEventListener('click', function() {
+                refreshJobStatus(jobId);
+            });
+            
+            // Initial check and then auto-refresh every 5 seconds if job is not complete
+            refreshJobStatus(jobId);
+            const status = document.getElementById('jobStatus').textContent.trim();
+            
+            if (status === 'pending' || status === 'processing') {
+                setInterval(function() {
+                    refreshJobStatus(jobId);
+                }, 5000);
+            }
+        }
+    });
+</script>
+{% endblock %}
